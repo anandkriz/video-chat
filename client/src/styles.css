@@ -1,12 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;600&display=swap');
 
-
+/* 
 * {
   margin: 0;
   padding: 0;
   text-align: center;
   font-family: 'Montserrat', sans-serif;
-}
+} */
 
 html {
   font-size: 62.5%;
@@ -21,28 +21,7 @@ li {
 }
 
 /* CSS */
-button {
-  /* display: flex;
-  flex-direction: column; */
-  align-items: center;
-  padding: 6px 14px;
-  /* font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif; */
-  border-radius: 6px;
-  border: none;
 
-  color: #fff;
-  background: -webkit-linear-gradient(#eee, rgb(248, 73, 57));
-  background-origin: border-box;
-  box-shadow: 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-}
-
-button:focus {
-  box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
-  outline: 0;
-}
 
 .videos {
   display: flex;
@@ -101,4 +80,258 @@ button:focus {
   background: -webkit-linear-gradient(rgb(236, 113, 65), rgb(194, 65, 112));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* ///////////////////// */
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'poppins', sans-serif;
+
+}
+
+.header{
+  width: 100%;
+  height: 100vh;
+  background: #00122e;
+  position: relative;
+
+}
+nav{
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background: #182842;
+  width: 120px;
+  padding: 10px 0;
+
+}
+nav .logo{
+  width: 56px;
+  display: block;
+  margin: auto;
+  cursor: pointer;
+}
+nav ul{
+  margin-top: 160px;
+
+}
+nav ul li{
+  list-style: none;
+
+}
+nav ul li img{
+  width: 50px;
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  cursor: pointer;
+  opacity: 0.5;
+  border-radius: 10px;
+  transition: opacity 0.5s, background 0.5s;
+}
+nav ul li img:hover{
+  opacity: 1;
+  background: #4d6181;
+
+}
+.active{
+  opacity: 1;
+  background: #4d6181;
+}
+.container{
+  margin-left: 120px;
+  padding: 0 2.5%;
+
+}
+.top-icons{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 25px 0;
+
+}
+.top-icons img{
+  width: 25px;
+  margin-left: 40px;
+  cursor: pointer;
+
+}
+.row{
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+
+}
+.col-1{
+  flex-basis: 65%;
+
+}
+.col-2{
+  flex-basis: 33%;
+}
+.host-img{
+  width: 100%;
+  border-radius: 15px;
+}
+
+.host-video{
+  height: 83%;
+  width: 93%;
+  border-radius: 51px;
+}
+.contarols{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.contarols img{
+  width: 40px;
+  margin: 20px 10px;
+  cursor: pointer;
+  transition: transform 0.5s;
+}
+.contarols .call-icon{
+  width: 70px;
+
+}
+.contarols img:hover{
+  transform: translateY(-10px);
+
+}
+.joined{
+  background: #182842;
+  border-radius: 15px;
+  padding: 30px 40px 50px;
+  color: #fff;
+
+}
+.joined div{
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-gap: 20px;
+
+}
+.joined video{
+  width: 100%;
+  border-radius: 10px;
+  cursor: pointer;
+
+}
+.invite{
+  background: #182842;
+  border-radius: 15px;
+  padding: 30px 40px 50px;
+  color: #fff;
+  margin-top: 20px;
+
+}
+.invite img{
+  margin-top: 20px;
+  width: 50px;
+  margin-left: 5px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+
+.invite p {
+  margin: 10px 0;
+}
+
+.invite div {
+  margin-bottom: 15px; 
+}
+
+.invite input {
+  width: 100%; 
+  padding: 8px; 
+  box-sizing: border-box; 
+  border: 1px solid #ccc; 
+  border-radius: 4px;
+}
+
+.call-button {
+  display: block; /* Make the button a block element */
+  width: 30%; /* Make the button take the full width of its container */
+  padding: 10px; /* Add padding for better visual appearance */
+  background-color: rgb(0, 255, 8); /* Set background color */
+  color: #fff; /* Set text color */
+  border: none; /* Remove border */
+  border-radius: 4px; /* Add rounded corners */
+  cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+.call-button:hover {
+  background-color: #00fd59; /* Darken background color on hover */
+}
+
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Box shadow for a bit of depth */
+  text-align: center;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.accept-button {
+  background-color: #40ff00;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.accept-button:hover {
+  background-color: #00b30f;
+}
+
+.calling-animation {
+  margin: 20px auto;
+}
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-color: #007bff;
+  border-radius: 50%;
+  margin-right: 5px;
+  animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(.5);
+  }
+  100% {
+    transform: scale(1.2);
+  }
 }

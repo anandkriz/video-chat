@@ -6,7 +6,7 @@ import Peer from 'simple-peer';
 
 
 
-const VideoCall = () => {
+const Ui = () => {
 
     const [yourID, setYourID] = useState("");
     const [users, setUsers] = useState({});
@@ -18,6 +18,7 @@ const VideoCall = () => {
     const [call, setCall] = useState({});
     const [me, setMe] = useState('');
     const [idToCall, setIdToCall] = useState('');
+    const [showModal, setShowModal] = useState(false);
 
 
     // console.log(callEndedByUser1,"callEndedByUser1")
@@ -53,12 +54,12 @@ const VideoCall = () => {
         socket.current.on("allUsers", (users) => {
             setUsers(users);
         });
-        socket.current.on("callEnded", ({user}) => {
+        socket.current.on("callEnded", ({ user }) => {
 
-                setCallEnded(true)
-                connectionRef.current.destroy();
-                window.location.reload();
-                console.log("The call has ended",   user);
+            setCallEnded(true)
+            connectionRef.current.destroy();
+            window.location.reload();
+            console.log("The call has ended", user);
         });
 
         return () => {
@@ -124,7 +125,7 @@ const VideoCall = () => {
 
         const otherUserId = call?.from ? call.from : idToCall;
         const data = { user: me, otherUser: otherUserId };
-    
+
         socket.current.emit("callEnded", data);
 
         window.location.reload();
@@ -136,10 +137,11 @@ const VideoCall = () => {
         setCallMuted(true);
     };
 
-    console.log(call)
     const unMuteCall = () => {
         setCallMuted(false);
     }
+
+
 
 
 
@@ -149,7 +151,7 @@ const VideoCall = () => {
 
             {/* <NavBar /> */}
 
-            <div>
+            {/* <div>
                 <div className='options'>
                     <div className='option'>
                         <form noValidate autoComplete='off'>
@@ -217,7 +219,7 @@ const VideoCall = () => {
                         </div>
                     )
                 }
-            </div>
+            </div> */}
             {/* <Options>
                 <Notifications />
             </Options> */}
@@ -227,11 +229,149 @@ const VideoCall = () => {
 
 
 
+            <div className="header" style={{ padding: "30px" }}>
 
+
+
+                <div>
+                    {/* <button onClick={toggleModal}>Open Modal</button> */}
+
+                    {call.isReceivingCall && !callAccepted && (
+                        <div className="modal-overlay">
+                            <div className="modal">
+                                <span className="close-button" >
+                                    &times;
+                                </span>
+                                {call.name ? <h2>{call.name} is Calling</h2> : <h2>Incoming Call</h2>}
+                                <div className="calling-animation">{true && <CallingAnimation />}</div>
+                                <button  className="accept-button" onClick={answerCall}>
+                                    Accept Call
+                                </button>
+                                <button style={{backgroundColor:"red"}} className="accept-button" >
+                                    Reject  Call
+                                </button>
+
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                <div className="container">
+
+                    <div className="row">
+                        <div className="col-1">
+
+                            {
+                                callAccepted && !callEnded ?
+                                    (
+                                        <>
+
+                                            <video playsInline muted={callMuted} autoPlay ref={userVideo} className='host-video' > </video>
+
+                                        </>
+                                    ) : <img
+                                        src="https://i.postimg.cc/5NhwTTMw/istockphoto-1300845569-612x612-1.jpg"
+                                        className="host-img"
+                                    />
+                            }
+
+
+
+
+
+
+
+                            <div className="contarols">
+                                {
+                                    callAccepted && !callEnded && <>
+                                        <img src="https://i.postimg.cc/3NVtVtgf/chat.png" />
+                                        <img src="https://i.postimg.cc/BQPYHG0r/disconnect.png" />
+                                        <img
+                                            src="https://i.postimg.cc/fyJH8G00/call.png"
+                                            className="call-icon"
+                                            onClick={leaveCall}
+                                        />
+                                        {
+                                            !callMuted ? (
+
+                                                <img onClick={muteCall} src="https://i.postimg.cc/bJFgSmFY/mic.png" />
+
+                                            ) : (
+
+                                                <img style={{ borderRadius: "50px" }} src="https://i.postimg.cc/KcBRv1P6/mute.jpg" onClick={unMuteCall} />
+                                            )
+                                        }
+                                        <img src="https://i.postimg.cc/Y2sDvCJN/cast.png" />
+
+                                    </>
+                                }
+
+                            </div>
+                        </div>
+                        <div className="col-2">
+                            <div className="joined">
+                                {/* <p>People Joined</p> */}
+
+                                <div>
+                                    {/* <img src="https://i.postimg.cc/WzFnG0QG/people-1.png" /> */}
+                                    {stream && (
+                                        <video playsInline muted ref={myVideo} autoPlay ></video>
+                                        // <div>
+                                        //     <div className='floatingName'>
+                                        //         <h3>{name || 'Name'}</h3>
+                                        //     </div>
+                                        //     <video playsInline muted ref={myVideo} autoPlay ></video>
+                                        // </div>
+                                    )
+                                    }
+
+                                </div>
+                            </div>
+                            <div className="invite">
+                                <h3>Your ID: {me}</h3>
+
+                                <p> Enter Name</p>
+                                <div>
+                                    <input type='text' value={name} onChange={(e) => setName(e.target.value)}></input>
+                                </div>
+                                <p> Enter Id</p>
+                                <div>
+                                    <input type='text' value={idToCall} onChange={(e) => setIdToCall(e.target.value)} ></input>
+                                </div>
+                                {
+                                    callAccepted && !callEnded ? (
+                                        <button class="call-button" style={{ backgroundColor: "#ff0000" }} onClick={leaveCall}>Hang Up</button>
+                                    ) : (
+                                        <button class="call-button" onClick={() => callUser(idToCall)}>Call</button>
+                                    )}
+
+{/* {
+                                    !callAccepted && callEnded && (
+                                        <button class="call-button" onClick={() => callUser(idToCall)}>Call</button>
+
+                                    )} */}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </>
     );
 }
 
-export default VideoCall;
+export default Ui;
 
 
+const CallingAnimation = () => {
+    return (
+        <div className="calling-dots">
+            <div className="dot"></div>
+            <div className="dot"></div>
+            <div className="dot"></div>
+            <div className="dot"></div>
+            <div className="dot"></div>
+
+        </div>
+    );
+};
