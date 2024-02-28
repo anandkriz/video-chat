@@ -47,7 +47,12 @@ io.on("connection", (socket) => {
 
 	});
 
+	socket.on("rejectCall", (data) => {
+		const { user, otherUser } = data;
+		io.to(otherUser).emit("rejectCall", { user });
+		delete users[otherUser];
 
+	});
 
 
 	socket.on("callUser", ({ userToCall, signalData, from, name }) => {
@@ -66,7 +71,7 @@ io.on("connection", (socket) => {
 	// socket.on("callEnded", () => {
 	// 	socket.broadcast.emit("callEnded"); // Broadcast a "callEnded" message to all connected clients except the sender
 	// });
-
+// sssss
 });
 
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

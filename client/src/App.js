@@ -13,8 +13,8 @@ const App = () => {
             {/* <NavBar /> */}
             <BrowserRouter>
                 <Routes>
-                    <Route path="/" exact element={<VideoCall />} />
-                    <Route path="/ui" element={<Ui />} />
+                    <Route path="/" exact element={<Ui />} />
+                    <Route path="/ui" element={<VideoCall />} />
 
                 </Routes>
             </BrowserRouter>

@@ -19,10 +19,10 @@ const Ui = () => {
     const [me, setMe] = useState('');
     const [idToCall, setIdToCall] = useState('');
     const [showModal, setShowModal] = useState(false);
+    const [rejectCall,setRejectCall]=useState(false)
 
 
     // console.log(callEndedByUser1,"callEndedByUser1")
-    console.log(me, "meee")
     const myVideo = useRef();
     const userVideo = useRef();
     const connectionRef = useRef();
@@ -49,6 +49,9 @@ const Ui = () => {
 
         socket.current.on('callUser', ({ from, name: callerName, signal }) => {
             setCall({ isReceivingCall: true, from, name: callerName, signal });
+            // setTimeout(() => {
+            //     userNotAccepted()
+            // }, 7000);
         });
 
         socket.current.on("allUsers", (users) => {
@@ -60,6 +63,25 @@ const Ui = () => {
             connectionRef.current.destroy();
             window.location.reload();
             console.log("The call has ended", user);
+        });
+
+
+        socket.current.on("callEnded", ({ user }) => {
+
+            setCallEnded(true)
+            connectionRef.current.destroy();
+            window.location.reload();
+            console.log("The call has ended", user);
+        });
+
+        socket.current.on("rejectCall", ({ user }) => {
+            setRejectCall(true)
+            // connectionRef.current.destroy();
+            // window.location.reload();
+            // setCallEnded(true)
+            // connectionRef.current.destroy();
+            // window.location.reload();
+            console.log(user+" declined the call");
         });
 
         return () => {
@@ -90,7 +112,17 @@ const Ui = () => {
 
 
     };
+    console.log("Topppppppp",callAccepted)
 
+    // const userNotAccepted=()=>{
+    //     console.log(">>>>>>>>>>",callAccepted)
+
+    //     if(callAccepted){
+    //         console.log("call accepted",callAccepted)
+    //     }else{
+    //         console.log(" call not accepted")
+    //     }
+    // }
 
     const callUser = (id) => {
 
@@ -142,10 +174,20 @@ const Ui = () => {
     }
 
 
+const RejectCall=()=>{
+    const data = { user: me, otherUser: call?.from };
 
+    socket.current.emit("rejectCall", data);
+    // window.location.reload();
+// if(connectionRef.current){
+    // connectionRef.current.destroy();
+    setCall({isReceivingCall: false})
 
+// }
 
+}
 
+console.log(call)
     return (
         <>
 
@@ -236,7 +278,7 @@ const Ui = () => {
                 <div>
                     {/* <button onClick={toggleModal}>Open Modal</button> */}
 
-                    {call.isReceivingCall && !callAccepted && (
+                    {call?.isReceivingCall && !callAccepted && (
                         <div className="modal-overlay">
                             <div className="modal">
                                 <span className="close-button" >
@@ -247,13 +289,28 @@ const Ui = () => {
                                 <button  className="accept-button" onClick={answerCall}>
                                     Accept Call
                                 </button>
-                                <button style={{backgroundColor:"red"}} className="accept-button" >
+                                <button style={{backgroundColor:"red"}} onClick={RejectCall} className="accept-button" >
                                     Reject  Call
                                 </button>
 
                             </div>
                         </div>
                     )}
+
+                    {rejectCall&&
+                    <div className="modal-overlay">
+                            <div className="modal">
+                                <span className="close-button" >
+                                    &times;
+                                </span>
+                                {/* {call.name ? <h2>{call.name} is Calling</h2> : <h2>Incoming Call</h2>} */}
+                                <h2>call rejected</h2>
+                                <button style={{backgroundColor:"red"}} onClick={()=>setRejectCall(false)} className="accept-button" >
+                                    ok
+                                </button>
+
+                            </div>
+                        </div>}
                 </div>
 
                 <div className="container">
