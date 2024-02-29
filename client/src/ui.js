@@ -19,7 +19,7 @@ const Ui = () => {
     const [me, setMe] = useState('');
     const [idToCall, setIdToCall] = useState('');
     const [showModal, setShowModal] = useState(false);
-    const [rejectCall,setRejectCall]=useState(false)
+    const [rejectCall,setRejectCall]=useState({status:false})
 
 
     // console.log(callEndedByUser1,"callEndedByUser1")
@@ -27,7 +27,9 @@ const Ui = () => {
     const userVideo = useRef();
     const connectionRef = useRef();
     const socket = useRef();
-
+    const callAcceptedRef = useRef(null);
+    const meRef=useRef(null)
+    const userRef=useRef(null)
     // console.log(users,"users")
 
     useEffect(() => {
@@ -49,9 +51,11 @@ const Ui = () => {
 
         socket.current.on('callUser', ({ from, name: callerName, signal }) => {
             setCall({ isReceivingCall: true, from, name: callerName, signal });
-            // setTimeout(() => {
-            //     userNotAccepted()
-            // }, 7000);
+            meRef.current=me
+            userRef.current=from
+            setTimeout(() => {
+                userNotAccepted()
+            }, 30000);
         });
 
         socket.current.on("allUsers", (users) => {
@@ -75,13 +79,18 @@ const Ui = () => {
         });
 
         socket.current.on("rejectCall", ({ user }) => {
-            setRejectCall(true)
+            setRejectCall({status:true,msg:"call rejected"})
             // connectionRef.current.destroy();
             // window.location.reload();
             // setCallEnded(true)
             // connectionRef.current.destroy();
             // window.location.reload();
             console.log(user+" declined the call");
+        });
+
+        socket.current.on("userNotResponder", ({ user }) => {
+            setRejectCall({status:true,msg:"No answar"})
+            // console.log(user+" declined the call");
         });
 
         return () => {
@@ -95,7 +104,7 @@ const Ui = () => {
 
     const answerCall = () => {
         setCallAccepted(true);
-
+        callAcceptedRef.current=true
         const peer = new Peer({ initiator: false, trickle: false, stream });
 
         peer.on('signal', (data) => {
@@ -114,15 +123,21 @@ const Ui = () => {
     };
     console.log("Topppppppp",callAccepted)
 
-    // const userNotAccepted=()=>{
-    //     console.log(">>>>>>>>>>",callAccepted)
+    const userNotAccepted=()=>{
+        console.log(">>>>>>>>>>",callAcceptedRef.current)
 
-    //     if(callAccepted){
-    //         console.log("call accepted",callAccepted)
-    //     }else{
-    //         console.log(" call not accepted")
-    //     }
-    // }
+        if(callAcceptedRef.current){
+            console.log("call accepted",callAccepted)
+        }else{
+            // RejectCall()
+            const data = {  otherUser: userRef.current };
+
+            socket.current.emit("userNotResponder", data);
+            setCall({isReceivingCall: false})
+
+            // console.log(" call not accepted", "mee",      "djhdj", userRef,"hujh")
+        }
+    }
 
     const callUser = (id) => {
 
@@ -175,6 +190,7 @@ const Ui = () => {
 
 
 const RejectCall=()=>{
+
     const data = { user: me, otherUser: call?.from };
 
     socket.current.emit("rejectCall", data);
@@ -188,6 +204,12 @@ const RejectCall=()=>{
 }
 
 console.log(call)
+
+const CallAgain=(id)=>{
+    setRejectCall({status:false})
+callUser(id)
+
+}
     return (
         <>
 
@@ -297,17 +319,25 @@ console.log(call)
                         </div>
                     )}
 
-                    {rejectCall&&
+                    {rejectCall?.status&&
                     <div className="modal-overlay">
                             <div className="modal">
                                 <span className="close-button" >
                                     &times;
                                 </span>
                                 {/* {call.name ? <h2>{call.name} is Calling</h2> : <h2>Incoming Call</h2>} */}
-                                <h2>call rejected</h2>
+                                <h2>{rejectCall?.msg}</h2>
+                                <div>
                                 <button style={{backgroundColor:"red"}} onClick={()=>setRejectCall(false)} className="accept-button" >
                                     ok
                                 </button>
+
+                                <button style={{backgroundColor:"green"}} onClick={()=>CallAgain(idToCall)} className="accept-button" >
+                                    call again
+                                </button>
+
+                                </div>
+                                
 
                             </div>
                         </div>}

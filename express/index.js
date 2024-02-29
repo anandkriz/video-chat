@@ -54,6 +54,13 @@ io.on("connection", (socket) => {
 
 	});
 
+	socket.on("userNotResponder", (data) => {
+		const {  otherUser } = data;
+		io.to(otherUser).emit("userNotResponder", { otherUser });
+		delete users[otherUser];
+
+	});
+
 
 	socket.on("callUser", ({ userToCall, signalData, from, name }) => {
 		io.to(userToCall).emit("callUser", { signal: signalData, from, name });
