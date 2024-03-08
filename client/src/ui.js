@@ -19,8 +19,9 @@ const Ui = () => {
     const [me, setMe] = useState('');
     const [idToCall, setIdToCall] = useState('');
     const [showModal, setShowModal] = useState(false);
-    const [rejectCall,setRejectCall]=useState({status:false})
-
+    const [rejectCall, setRejectCall] = useState({ status: false })
+    const [startTime, setStartTime] = useState(null);
+    const [elapsedTime, setElapsedTime] = useState(0);
 
     // console.log(callEndedByUser1,"callEndedByUser1")
     const myVideo = useRef();
@@ -28,8 +29,8 @@ const Ui = () => {
     const connectionRef = useRef();
     const socket = useRef();
     const callAcceptedRef = useRef(null);
-    const meRef=useRef(null)
-    const userRef=useRef(null)
+    const meRef = useRef(null)
+    const userRef = useRef(null)
     // console.log(users,"users")
 
     useEffect(() => {
@@ -51,8 +52,8 @@ const Ui = () => {
 
         socket.current.on('callUser', ({ from, name: callerName, signal }) => {
             setCall({ isReceivingCall: true, from, name: callerName, signal });
-            meRef.current=me
-            userRef.current=from
+            meRef.current = me
+            userRef.current = from
             setTimeout(() => {
                 userNotAccepted()
             }, 30000);
@@ -62,34 +63,28 @@ const Ui = () => {
             setUsers(users);
         });
         socket.current.on("callEnded", ({ user }) => {
+            console.log("The call has ended", user);
 
             setCallEnded(true)
             connectionRef.current.destroy();
             window.location.reload();
-            console.log("The call has ended", user);
         });
 
 
-        socket.current.on("callEnded", ({ user }) => {
 
-            setCallEnded(true)
-            connectionRef.current.destroy();
-            window.location.reload();
-            console.log("The call has ended", user);
-        });
 
         socket.current.on("rejectCall", ({ user }) => {
-            setRejectCall({status:true,msg:"call rejected"})
+            setRejectCall({ status: true, msg: "call rejected" })
             // connectionRef.current.destroy();
             // window.location.reload();
             // setCallEnded(true)
             // connectionRef.current.destroy();
             // window.location.reload();
-            console.log(user+" declined the call");
+            console.log(user + " declined the call");
         });
 
         socket.current.on("userNotResponder", ({ user }) => {
-            setRejectCall({status:true,msg:"No answar"})
+            setRejectCall({ status: true, msg: "No answar" })
             // console.log(user+" declined the call");
         });
 
@@ -104,7 +99,9 @@ const Ui = () => {
 
     const answerCall = () => {
         setCallAccepted(true);
-        callAcceptedRef.current=true
+        startCall()
+
+        callAcceptedRef.current = true
         const peer = new Peer({ initiator: false, trickle: false, stream });
 
         peer.on('signal', (data) => {
@@ -121,19 +118,19 @@ const Ui = () => {
 
 
     };
-    console.log("Topppppppp",callAccepted)
+    // console.log("Topppppppp", callAccepted)
 
-    const userNotAccepted=()=>{
-        console.log(">>>>>>>>>>",callAcceptedRef.current)
+    const userNotAccepted = () => {
+        // console.log(">>>>>>>>>>", callAcceptedRef.current)
 
-        if(callAcceptedRef.current){
-            console.log("call accepted",callAccepted)
-        }else{
+        if (callAcceptedRef.current) {
+            console.log("call accepted", callAccepted)
+        } else {
             // RejectCall()
-            const data = {  otherUser: userRef.current };
+            const data = { otherUser: userRef.current };
 
             socket.current.emit("userNotResponder", data);
-            setCall({isReceivingCall: false})
+            setCall({ isReceivingCall: false })
 
             // console.log(" call not accepted", "mee",      "djhdj", userRef,"hujh")
         }
@@ -154,6 +151,7 @@ const Ui = () => {
 
         socket.current.on('callAccepted', (signal) => {
             setCallAccepted(true);
+            startCall()
             peer.signal(signal);
         });
 
@@ -165,15 +163,16 @@ const Ui = () => {
 
 
 
-
-    const leaveCall = () => {
+    const leaveCall = async () => {
         setCallEnded(true);
-        connectionRef.current.destroy();
-
         const otherUserId = call?.from ? call.from : idToCall;
         const data = { user: me, otherUser: otherUserId };
 
-        socket.current.emit("callEnded", data);
+        console.log(data)
+        await socket.current.emit("callEnded", data);
+        // connectionRef.current.destroy();
+
+
 
         window.location.reload();
         // setUsers(users);
@@ -189,27 +188,60 @@ const Ui = () => {
     }
 
 
-const RejectCall=()=>{
+    const RejectCall = () => {
 
-    const data = { user: me, otherUser: call?.from };
+        const data = { user: me, otherUser: call?.from };
 
-    socket.current.emit("rejectCall", data);
-    // window.location.reload();
-// if(connectionRef.current){
-    // connectionRef.current.destroy();
-    setCall({isReceivingCall: false})
+        socket.current.emit("rejectCall", data);
+        // window.location.reload();
+        // if(connectionRef.current){
+        // connectionRef.current.destroy();
+        setCall({ isReceivingCall: false })
 
-// }
+        // }
 
-}
+    }
 
-console.log(call)
+    // console.log(call)
 
-const CallAgain=(id)=>{
-    setRejectCall({status:false})
-callUser(id)
+    const CallAgain = (id) => {
+        setRejectCall({ status: false })
+        callUser(id)
 
-}
+    }
+
+
+
+
+    useEffect(() => {
+        if (startTime !== null) {
+            const intervalId = setInterval(() => {
+                setElapsedTime(Date.now() - startTime);
+            }, 1000);
+            return () => clearInterval(intervalId);
+        }
+    }, [startTime]);
+
+    const startCall = () => {
+        setStartTime(Date.now());
+    };
+
+    const formatTime = (time) => {
+        const seconds = Math.floor((time / 1000) % 60);
+        const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+        const minutes = Math.floor((time / (1000 * 60)) % 60);
+        const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+        const hours = Math.floor((time / (1000 * 60 * 60)) % 24);
+
+
+        return hours === 0 ? `${formattedMinutes}:${formattedSeconds}` : `${hours}:${formattedMinutes}:${formattedSeconds}`;
+    };
+
+
+
+
+
     return (
         <>
 
@@ -308,10 +340,10 @@ callUser(id)
                                 </span>
                                 {call.name ? <h2>{call.name} is Calling</h2> : <h2>Incoming Call</h2>}
                                 <div className="calling-animation">{true && <CallingAnimation />}</div>
-                                <button  className="accept-button" onClick={answerCall}>
+                                <button className="accept-button" onClick={answerCall}>
                                     Accept Call
                                 </button>
-                                <button style={{backgroundColor:"red"}} onClick={RejectCall} className="accept-button" >
+                                <button style={{ backgroundColor: "red" }} onClick={RejectCall} className="accept-button" >
                                     Reject  Call
                                 </button>
 
@@ -319,8 +351,8 @@ callUser(id)
                         </div>
                     )}
 
-                    {rejectCall?.status&&
-                    <div className="modal-overlay">
+                    {rejectCall?.status &&
+                        <div className="modal-overlay">
                             <div className="modal">
                                 <span className="close-button" >
                                     &times;
@@ -328,16 +360,16 @@ callUser(id)
                                 {/* {call.name ? <h2>{call.name} is Calling</h2> : <h2>Incoming Call</h2>} */}
                                 <h2>{rejectCall?.msg}</h2>
                                 <div>
-                                <button style={{backgroundColor:"red"}} onClick={()=>setRejectCall(false)} className="accept-button" >
-                                    ok
-                                </button>
+                                    <button style={{ backgroundColor: "red" }} onClick={() => setRejectCall(false)} className="accept-button" >
+                                        ok
+                                    </button>
 
-                                <button style={{backgroundColor:"green"}} onClick={()=>CallAgain(idToCall)} className="accept-button" >
-                                    call again
-                                </button>
+                                    <button style={{ backgroundColor: "green" }} onClick={() => CallAgain(idToCall)} className="accept-button" >
+                                        call again
+                                    </button>
 
                                 </div>
-                                
+
 
                             </div>
                         </div>}
@@ -413,6 +445,11 @@ callUser(id)
                                     }
 
                                 </div>
+                                <div>
+                                    {/* <button onClick={startCall}>Start Call</button> */}
+                                    {elapsedTime > 0 && <h3> {formatTime(elapsedTime)}</h3>}
+
+                                </div>
                             </div>
                             <div className="invite">
                                 <h3>Your ID: {me}</h3>
@@ -432,11 +469,12 @@ callUser(id)
                                         <button class="call-button" onClick={() => callUser(idToCall)}>Call</button>
                                     )}
 
-{/* {
+                                {/* {
                                     !callAccepted && callEnded && (
                                         <button class="call-button" onClick={() => callUser(idToCall)}>Call</button>
 
                                     )} */}
+
 
                             </div>
                         </div>
