@@ -175,6 +175,7 @@ nav ul li img:hover{
 .host-img{
   width: 100%;
   border-radius: 15px;
+  height: 80%;
 }
 
 .host-video{
@@ -334,4 +335,282 @@ nav ul li img:hover{
   100% {
     transform: scale(1.2);
   }
+}
+
+/* chatbox.css */
+
+.chat-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+/* Left Sidebar */
+.sidebar {
+  width: 300px;
+  border-right: 1px solid #ccc;
+  padding: 16px;
+}
+
+.sidebar h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.contacts {
+  overflow-y: auto;
+  height: calc(100vh - 64px);
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+.contact-item img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+}
+
+.contact-item .name {
+  font-weight: bold;
+}
+
+.contact-item .status {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Main Chat Area */
+.chat-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top Navigation */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  padding: 16px;
+}
+
+.top-nav input {
+  padding: 8px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.top-nav .icons {
+  display: flex;
+  gap: 8px;
+}
+
+.top-nav button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Chat Messages */
+.chat-messages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.chat-message {
+  display: flex;
+  margin-bottom: 16px;
+}
+
+.chat-message.sent {
+  justify-content: flex-end;
+}
+
+.chat-message.received {
+  justify-content: flex-start;
+}
+
+.message-bubble {
+  padding: 12px 16px;
+  border-radius: 16px;
+  max-width: 70%;
+}
+
+.message-bubble.sent {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.message-bubble.received {
+  background-color: #f0ad4e;
+  color: #fff;
+}
+
+.message-timestamp {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.7;
+  margin-top: 8px;
+}
+
+/* Message Input */
+.message-input {
+  border-top: 1px solid #ccc;
+  padding: 16px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.message-input input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.message-input button {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* login */
+
+.page-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f3f4f6;
+}
+
+/* Card */
+.card {
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Card Header */
+.card-header {
+  padding: 16px;
+  text-align: center;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.card-description {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Card Content */
+.card-content {
+  padding: 16px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  font-size: 0.875rem;
+  margin-bottom: 4px;
+}
+
+.input {
+  width: 100%;
+  padding: 8px;
+  font-size: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+}
+
+/* Buttons */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button-primary {
+  background-color: #1d4ed8;
+  color: #fff;
+}
+
+.button-outline {
+  border: 1px solid #d1d5db;
+  background: transparent;
+  color: #374151;
+}
+
+.button-link {
+  background: none;
+  color: #1d4ed8;
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 16px 0;
+  position: relative;
+}
+
+.divider-line {
+  width: 100%;
+  border-top: 1px solid #e5e7eb;
+}
+
+.divider-text {
+  background: #fff;
+  padding: 0 8px;
+  font-size: 0.75rem;
+  color: #6b7280;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Footer */
+.card-footer {
+  padding: 16px;
+  text-align: center;
 }

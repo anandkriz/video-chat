@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 
 import { io } from 'socket.io-client';
 import Peer from 'simple-peer';
-
+import blank from './blank_image.webp'
 
 
 const Ui = () => {
@@ -389,7 +389,7 @@ const Ui = () => {
 
                                         </>
                                     ) : <img
-                                        src="https://i.postimg.cc/5NhwTTMw/istockphoto-1300845569-612x612-1.jpg"
+                                        src={blank}
                                         className="host-img"
                                     />
                             }

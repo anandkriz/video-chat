@@ -30,9 +30,9 @@ const VideoCall = () => {
     // console.log(users,"users")
 
     useEffect(() => {
-        socket.current = io.connect("https://video-chat-7w68.onrender.com");
+        // socket.current = io.connect("https://video-chat-7w68.onrender.com");
 
-        // socket.current = io.connect("http://localhost:8000");
+        socket.current = io.connect("http://localhost:8000");
 
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then((currentStream) => {
