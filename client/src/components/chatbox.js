@@ -23,9 +23,9 @@ export default function ChatInterface() {
   const {userId}=useParams()
   console.log(userId)
   useEffect(()=>{
-    // socket.current = io.connect("https://video-chat-7w68.onrender.com");
+    socket.current = io.connect("https://video-chat-7w68.onrender.com");
 
-    socket.current=io.connect("http://localhost:8001")
+    // socket.current=io.connect("http://localhost:8001")
     socket.current.emit("newUser",userId );
     socket.current.on("getAllUsers", (id) => {
         console.log(id)
